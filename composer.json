@@ -1,0 +1,28 @@
+{
+    "name": "liquidweb/unique-templates",
+    "description": "Discover unique templates within a WordPress theme",
+    "type": "wp-cli-package",
+    "homepage": "https://github.com/liquidweb/unique-templates",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Liquid Web",
+            "homepage": "https://www.liquidweb.com"
+        },
+        {
+            "name": "Steve Grunwell",
+            "homepage": "https://stevegrunwell.com"
+        }
+    ],
+    "minimum-stability": "dev",
+    "prefer-stable": true,
+    "autoload": {
+        "files": [ "command.php" ]
+    },
+    "require": {
+        "wp-cli/wp-cli": "^1.1.0"
+    },
+    "require-dev": {
+        "behat/behat": "~2.5"
+    }
+}
