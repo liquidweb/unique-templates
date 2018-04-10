@@ -113,6 +113,7 @@ Feature: Test that unique templates are identified.
       """
       archive.php
       category.php
+      embed.php
       index.php
       page.php
       single.php
@@ -124,6 +125,7 @@ Feature: Test that unique templates are identified.
       """
       archive.php
       category.php
+      embed.php
       index.php
       page.php
       single.php
@@ -137,6 +139,7 @@ Feature: Test that unique templates are identified.
       single.php
       page.php
       index.php
+      embed.php
       category.php
       archive.php
       """
