@@ -1,5 +1,36 @@
 Feature: Test that unique templates are identified.
 
+  Scenario: Command can filter returned fields.
+    Given a WP install
+    And an active theme with the given templates:
+      """
+      index.php
+      """
+
+    When I run `wp theme unique-templates --fields=all`
+    Then STDOUT should be a table containing rows:
+      | name | filename | url |
+
+    When I run `wp theme unique-templates --fields=name`
+    Then STDOUT should be a table containing rows:
+      | name |
+
+    When I run `wp theme unique-templates --fields=filename`
+    Then STDOUT should be a table containing rows:
+      | filename |
+
+    When I run `wp theme unique-templates --fields=url`
+    Then STDOUT should be a table containing rows:
+      | url |
+
+    When I run `wp theme unique-templates --fields=name,filename`
+    Then STDOUT should be a table containing rows:
+      | name | filename |
+
+    When I run `wp theme unique-templates --fields=filename,name`
+    Then STDOUT should be a table containing rows:
+      | filename | name |
+
   Scenario: Command can find standard templates.
     Given a WP install
     And an active theme with the given templates:

@@ -26,13 +26,14 @@ class Theme extends WP_CLI_Command {
 	 *
 	 * [--fields=<fields>]
 	 * : Limit the output to specific fields. Separate multiple values with a comma.
-	 * ---
-	 * default: all
-	 * options:
+	 *
+	 *   Available options are:
 	 *   - all
 	 *   - name
 	 *   - filename
 	 *   - url
+	 * ---
+	 * default: all
 	 * ---
 	 *
 	 * [--orderby=<field>]
@@ -63,8 +64,8 @@ class Theme extends WP_CLI_Command {
 			$assoc_args['fields'] = 'name,filename,url';
 		}
 		$fields = array_intersect(
-			[ 'name', 'filename', 'url' ],
-			explode( ',', $assoc_args['fields'] )
+			explode( ',', $assoc_args['fields'] ),
+			[ 'name', 'filename', 'url' ]
 		);
 
 		// Collect the list of templates.
