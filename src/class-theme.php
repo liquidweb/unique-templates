@@ -8,6 +8,15 @@ use WP_CLI_Command;
 class Theme extends WP_CLI_Command {
 
 	/**
+	 * A cache of named templates.
+	 *
+	 * @var array
+	 */
+	protected $named_templates;
+
+	/**
+	 * An array of directories from which templates can be loaded.
+	 *
 	 * @var array
 	 */
 	protected $template_paths;
@@ -119,13 +128,29 @@ class Theme extends WP_CLI_Command {
 			get_attachment_template(),
 		];
 
-		// Append named templates, using wp_get_theme()->get_post_templates().
-		$named_templates = array_reduce( wp_get_theme()->get_post_templates(), function ( $templates, $group ) {
-			return array_merge( $templates, array_keys( $group ) );
-		}, [] );
-
 		// Create a single list of template files and filter it to unique files.
-		return array_filter( array_unique( array_merge( $template_files, $named_templates ) ) );
+		return array_filter( array_unique( array_merge(
+			$template_files,
+			array_keys( $this->get_named_templates() )
+		) ) );
+	}
+
+	/**
+	 * Get a flat array of all named (e.g. containing the "Template Name" file header comment)
+	 * templates in the current theme.
+	 *
+	 * The resulting value will be cached in $this->named_templates.
+	 *
+	 * @return array An array of template names, keyed by their absolute filepaths.
+	 */
+	protected function get_named_templates() {
+		if ( empty( $this->named_templates ) ) {
+			$this->named_templates = array_reduce( wp_get_theme()->get_post_templates(), function ( $templates, $group ) {
+				return array_merge( $templates, $group );
+			}, [] );
+		}
+
+		return $this->named_templates;
 	}
 
 	/**
@@ -136,8 +161,9 @@ class Theme extends WP_CLI_Command {
 	 * @return string A friendly name for the template.
 	 */
 	protected function name_template( $filepath ) {
-		$filename = str_replace( $this->template_paths, '', $filepath );
-		$names    = [
+		$filename        = str_replace( $this->template_paths, '', $filepath );
+		$named_templates = $this->get_named_templates();
+		$names           = [
 			'index.php'                      => _x( 'Default template', 'template name', 'unique-templates' ),
 			'home.php'                       => _x( 'Homepage', 'template name', 'unique-templates' ),
 			'front-page.php'                 => _x( 'Front page', 'template name', 'unique-templates' ),
@@ -209,6 +235,9 @@ class Theme extends WP_CLI_Command {
 		// Exact matches.
 		if ( isset( $names[ $filename ] ) ) {
 			return $names[ $filename ];
+
+		} elseif ( isset( $named_templates[ $filepath ] ) ) {
+			return $named_templates[ $filepath ];
 		}
 
 		// Assemble a list of patterns to match against the filename.
@@ -295,8 +324,6 @@ class Theme extends WP_CLI_Command {
 				return sprintf( $names[ $file_pattern ], $matches[2] );
 			}
 		}
-
-		// Check against named templates.
 
 		// Check for MIME types.
 		foreach ( get_allowed_mime_types() as $mime ) {

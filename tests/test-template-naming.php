@@ -10,6 +10,7 @@ namespace LiquidWeb\Tests;
 
 use LiquidWeb\UniqueTemplates\Theme;
 use ReflectionMethod;
+use ReflectionProperty;
 use WP_UnitTestCase;
 
 class TemplateNamingTest extends WP_UnitTestCase {
@@ -195,15 +196,32 @@ class TemplateNamingTest extends WP_UnitTestCase {
 	}
 
 	public function test_named_templates() {
-		$this->markTestIncomplete();
+		$theme_dir = trailingslashit( get_stylesheet_directory() );
+		$instance  = new Theme();
+		$property  = new ReflectionProperty( $instance, 'named_templates' );
+		$property->setAccessible( true );
+		$property->setValue( $instance, [
+			$theme_dir . 'my-template.php'           => 'My Template',
+			$theme_dir . 'templates/another-one.php' => 'Another Named Template',
+		] );
+
+		$this->assertEquals(
+			'My Template',
+			$this->name_template( $theme_dir . 'my-template.php', $instance )
+		);
+
+		$this->assertEquals(
+			'Another Named Template',
+			$this->name_template( $theme_dir . 'templates/another-one.php', $instance )
+		);
 	}
 
 	public function test_theme_compatibility_templates() {
 		$this->markTestIncomplete();
 	}
 
-	protected function name_template( $filename ) {
-		$instance = new Theme();
+	protected function name_template( $filename, $instance = null ) {
+		$instance = $instance ? $instance : new Theme();
 		$method   = new ReflectionMethod( $instance, 'name_template' );
 		$method->setAccessible( true );
 
