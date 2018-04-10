@@ -180,8 +180,6 @@ class TemplateNamingTest extends WP_UnitTestCase {
 	}
 
 	public function test_embed_templates() {
-		$author = $this->factory()->user->create_and_get();
-
 		$this->assertEquals(
 			'Template for embedding post posts with the quote format',
 			$this->name_template( 'embed-post-quote.php' ),
