@@ -25,6 +25,7 @@ class Theme extends WP_CLI_Command {
 		$this->template_paths = array_map( 'trailingslashit', [
 			get_stylesheet_directory(),
 			get_template_directory(),
+			ABSPATH . WPINC . '/theme-compat/',
 		] );
 	}
 

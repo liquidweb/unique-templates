@@ -215,7 +215,11 @@ class TemplateNamingTest extends WP_UnitTestCase {
 	}
 
 	public function test_theme_compatibility_templates() {
-		$this->markTestIncomplete();
+		$this->assertEquals(
+			$this->name_template( 'embed.php' ),
+			$this->name_template( ABSPATH . WPINC . '/theme-compat/embed.php' ),
+			'Expected the WordPress-provided embed.php to receive the same treatment.'
+		);
 	}
 
 	protected function name_template( $filename, $instance = null ) {
